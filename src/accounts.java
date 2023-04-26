@@ -4,8 +4,6 @@ public class accounts {
     public String accountType;
     public Double balance;
     public Integer customerForeignKey;
-
-    accountsDao adao = new accountsDao();
     customerDao cdao = new customerDao();
 
     public accounts() {

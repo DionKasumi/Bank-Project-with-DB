@@ -17,13 +17,12 @@ public class accountsDao {
     //adding acc
     public void addAccount(customer c) {
         System.out.println("Type of Account: \n1. Savings\n2. Investment");
-        String typeOfAccount = scan.nextLine();
-        accountType(typeOfAccount);
-        addingFundsToNewAccount(c, typeOfAccount);
+        generateNewAccount(c, accountType());
     }
 
     //method to choose type
-    public String accountType(String typeOfAccount) {
+    public String accountType() {
+        String typeOfAccount = scan.nextLine();
         if (typeOfAccount.equalsIgnoreCase("1")) {
             typeOfAccount = "Savings";
             return typeOfAccount;
@@ -37,7 +36,7 @@ public class accountsDao {
     }
 
     //making first deposit
-    public void addingFundsToNewAccount(customer c, String typeOfAccount) {
+    public void generateNewAccount(customer c, String typeOfAccount) {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -61,7 +60,7 @@ public class accountsDao {
     }
 
     //getting a list of accounts based on customer ID
-    public void getAccounts(customer c) {
+    public void getAllAccountsOfUserAndShow(customer c) {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -71,18 +70,7 @@ public class accountsDao {
             conn = DriverManager.getConnection(IDatabaseInformation.databasePath);
             stmt = conn.createStatement();
             rs = stmt.executeQuery(IDatabaseInformation.getAccountsSql + c.getID());
-            if (!rs.next()) {
-                System.out.println("No accounts found for customer");
-            } else {
-                do {
-                    Integer account_id = rs.getInt(IDatabaseInformation.accountsId);
-                    String account_type = rs.getString(IDatabaseInformation.accountType);
-                    Double balance = rs.getDouble(IDatabaseInformation.balance);
-                    String account = "Account Number: " + String.valueOf(account_id) + "\nAccount Type: " + account_type + "\nBalance: " + String.valueOf(balance);
-                    System.out.println(account);
-                    System.out.println("\n");
-                } while (rs.next());
-            }
+            rsGettingAllAccountsOfUserFromDatabase(rs);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -90,51 +78,67 @@ public class accountsDao {
         }
     }
 
-    //accessing one of the users account
-    public void accessAccount(customer c) {
-        System.out.println("Please enter account number below: ");
-        int accountNumByUser = scan.nextInt();
-        Integer customerId = c.getID();
-        accessingAccount(accountNumByUser, customerId);
+    //method to get the info of accounts
+    public void rsGettingAllAccountsOfUserFromDatabase(ResultSet rs) throws SQLException {
+        if (!rs.next()) {
+            System.out.println("No accounts found for customer");
+        } else {
+            do {
+                int account_id = rs.getInt(IDatabaseInformation.accountsId);
+                String account_type = rs.getString(IDatabaseInformation.accountType);
+                double balance = rs.getDouble(IDatabaseInformation.balance);
+                String account = "Account Number: " + account_id + "\nAccount Type: " + account_type + "\nBalance: " + balance;
+                System.out.println(account);
+                System.out.println("\n");
+            } while (rs.next());
+        }
     }
-
-    //method to access account
-    public void accessingAccount(Integer accountNumByUser, Integer customerId) {
-        synchronized (lock) {
-            Connection conn = null;
-            Statement stmt = null;
-            ResultSet rs = null;
-            PreparedStatement pstmt = null;
-            String accessAccountSql = "SELECT * FROM " + IDatabaseInformation.accountsTable + " WHERE " + IDatabaseInformation.accountsId + " = " + accountNumByUser + " AND " + customerId + " = " + IDatabaseInformation.accountTable_customerId;
-            try {
-                conn = DriverManager.getConnection(IDatabaseInformation.databasePath);
-                ((org.sqlite.SQLiteConnection) conn).setBusyTimeout(5000); // Timeout in milliseconds
-                stmt = conn.createStatement();
-                rs = stmt.executeQuery(String.valueOf(accessAccountSql));
-                if (!rs.next()) {
-                    System.out.println("No accounts found with this Number: " + accountNumByUser);
-                } else {
-                    do {
-                        Integer account_id = rs.getInt(IDatabaseInformation.accountsId);
-                        Double balance = rs.getDouble(IDatabaseInformation.balance);
-                        String account = "Account Number: " + account_id + "\nBalance: " + balance;
-                        System.out.println(account);
-                        System.out.println("\n");
-                        System.out.println("To Withdraw, Enter '1'\nTo Deposit, Enter '2'");
-                        String actionDecision = scan.next();
-                        if (actionDecision.equals("1")) {
-                            withdrawMoney(balance, account_id);
-                        } else if (actionDecision.equals("2")) {
-                            depositMoney(balance, account_id);
-                        }
-                    } while (rs.next());
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } finally {
-                closeAll(conn, stmt, pstmt, rs);
-            }
+    
+    //accessing one of the accounts to withdraw or deposit
+    public void accessingAccountForWithdrawOrDeposit(customer c) {
+        
+        System.out.println("Please enter account number below: ");
+        Integer accountNumByUser = scan.nextInt();
+        Integer customerId = c.getID();
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        PreparedStatement pstmt = null;
+        String accessAccountSql = "SELECT * FROM " + IDatabaseInformation.accountsTable + " WHERE " + IDatabaseInformation.accountsId + " = " + accountNumByUser + " AND " + customerId + " = " + IDatabaseInformation.accountTable_customerId;
+        try {
+            conn = DriverManager.getConnection(IDatabaseInformation.databasePath);
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(accessAccountSql);
+            rsAccessingAnAccountForDepositOrWithdraw(rs, accountNumByUser);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeAll(conn, stmt, pstmt, rs);
+        }
+    }
+    //rs process to get and set the new funds based on withdraw or deposit
+    public void rsAccessingAnAccountForDepositOrWithdraw(ResultSet rs, Integer accountNumByUser) throws SQLException {
+        if (!rs.next()) {
+            System.out.println("No accounts found with this Number: " + accountNumByUser);
+        } else {
+            do {
+                Integer account_id = rs.getInt(IDatabaseInformation.accountsId);
+                Double balance = rs.getDouble(IDatabaseInformation.balance);
+                String account = "Account Number: " + account_id + "\nBalance: " + balance;
+                System.out.println(account);
+                System.out.println("\n");
+                System.out.println("To Withdraw, Enter '1'\nTo Deposit, Enter '2'");
+                String actionDecision = scan.next();
+                withdrawOrDeposit(actionDecision, balance, account_id);
+            } while (rs.next());
+        }
+    }
+    //User input (withdraw or deposit) and methods that it calls
+    public void withdrawOrDeposit(String actionDecision, Double balance, Integer account_id){
+        if (actionDecision.equals("1")) {
+            withdrawMoney(balance, account_id);
+        } else if (actionDecision.equals("2")) {
+            depositMoney(balance, account_id);
         }
     }
 
@@ -170,17 +174,17 @@ public class accountsDao {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
-        PreparedStatement pstmtDelete = null;
+        PreparedStatement pstmtDelete;
         PreparedStatement pstmtInsert = null;
         System.out.println("Write amount you want to deposit: ");
         double amountForDeposit = scan.nextDouble();
         balance += amountForDeposit;
-        String customer_id_on_account = accessAccountValue(IDatabaseInformation.accountTable_customerId, accountId);
-        String account_type = accessAccountValue(IDatabaseInformation.accountType, accountId);
+        String customer_id_on_account = access_a_particularFieldInUsersAccount(IDatabaseInformation.accountTable_customerId, accountId);
+        String account_type = access_a_particularFieldInUsersAccount(IDatabaseInformation.accountType, accountId);
         String deleteSQL = "DELETE FROM " + IDatabaseInformation.accountsTable + " WHERE " + IDatabaseInformation.accountsId + " = ?";
         String insertSQL = "INSERT INTO " + IDatabaseInformation.accountsTable + "(account_id, costumer_id, account_type, balance) VALUES (?, ?, ?, ?)";
         try {
-            accessAccountValue(IDatabaseInformation.accountType, accountId);
+            access_a_particularFieldInUsersAccount(IDatabaseInformation.accountType, accountId);
             conn = DriverManager.getConnection(IDatabaseInformation.databasePath);
             pstmtDelete = conn.prepareStatement(deleteSQL);
             pstmtInsert = conn.prepareStatement(insertSQL);
@@ -201,7 +205,7 @@ public class accountsDao {
     }
 
     //method to access a specific value from the account based on account ID
-    public String accessAccountValue(String getValue, Integer account_id) {
+    public String access_a_particularFieldInUsersAccount(String getValue, Integer account_id) {
 
         Connection conn = null;
         Statement stmt = null;
@@ -211,7 +215,7 @@ public class accountsDao {
         try {
             conn = DriverManager.getConnection(IDatabaseInformation.databasePath);
             stmt = conn.createStatement();
-            rs = stmt.executeQuery(String.valueOf(accessAccountTypeSql));
+            rs = stmt.executeQuery(accessAccountTypeSql);
             if (!rs.next()) {
                 System.out.println("No accounts found with this criteria: " + account_id);
             } else {

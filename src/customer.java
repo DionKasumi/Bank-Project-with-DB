@@ -102,7 +102,7 @@ public class customer {
         return randomNumber;
     }
 
-    public void createNewUser(customerDao dao){
+    public void createNewUser(customerDao dao){                                             //ADD EXIT IF NEEDED HERE
         this.id = generateRandomNumber();
         System.out.println("Please enter username below: ");
         this.username = scan.nextLine();

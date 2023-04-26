@@ -1,12 +1,7 @@
 import java.sql.*;
 
 public class customerDao {
-
-ResultSet rs = null;
-Statement stmt = null;
-Connection conn = null;
 PreparedStatement pstmt = null;
-
 
     public void addCustomer(customer customer) {
         Connection conn = null;

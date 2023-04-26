@@ -5,8 +5,6 @@ public class firstPage {
     logIn newlogIn = new logIn();
     customer customer = new customer();
     customerDao cs = new customerDao();
-    accountsDao adao = new accountsDao();
-    accounts acc = new accounts();
 
     public boolean exit = false;
 

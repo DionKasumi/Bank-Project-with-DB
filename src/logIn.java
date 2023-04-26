@@ -23,9 +23,9 @@ public class logIn {
         if (accountDecision.equalsIgnoreCase("1")) {
             acc.createNewAccount(adao, usernameAttempt, passwordAttempt);
         } else if (accountDecision.equalsIgnoreCase("2")) {
-            adao.getAccounts(customerdao.getLoggedInUser(usernameAttempt, passwordAttempt));
+            adao.getAllAccountsOfUserAndShow(customerdao.getLoggedInUser(usernameAttempt, passwordAttempt));
         } else if (accountDecision.equalsIgnoreCase("3")) {
-            adao.accessAccount(customerdao.getLoggedInUser(usernameAttempt,passwordAttempt));
+            adao.accessingAccountForWithdrawOrDeposit(customerdao.getLoggedInUser(usernameAttempt, passwordAttempt));
         } else if (accountDecision.equals("4")) {
             this.stayHere = false;
         }
@@ -35,7 +35,7 @@ public class logIn {
         System.out.println("Enter password: ");
         String passwordAttempt = scan.nextLine();
         if(customerdao.checkPassword(usernameAttempt, passwordAttempt)){
-            System.out.println("Successfully logged in !!!");
+            System.out.println("*********************************\n    Successfully logged in!\n*********************************");
             this.stayHere = true;
             while(stayHere) {
                 homepageOptions(usernameAttempt, passwordAttempt);
