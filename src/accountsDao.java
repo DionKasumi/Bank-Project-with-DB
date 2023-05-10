@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class accountsDao {
 
     static Random rand = new Random();
-    private final Object lock = new Object();
+
     Scanner scan = new Scanner(System.in);
 
     public static int generateRandomNumber() {
@@ -14,13 +14,15 @@ public class accountsDao {
         return rand.nextInt(8999999) + 1000000;
     }
 
+    transactionsDao transactionsdao = new transactionsDao();
+
     //adding acc
     public void addAccount(customer c) {
         System.out.println("Type of Account: \n1. Savings\n2. Investment");
         generateNewAccount(c, accountType());
     }
 
-    //method to choose type
+    //method to choose Account type: Investment or Savings
     public String accountType() {
         String typeOfAccount = scan.nextLine();
         if (typeOfAccount.equalsIgnoreCase("1")) {
@@ -92,11 +94,13 @@ public class accountsDao {
                 System.out.println("\n");
             } while (rs.next());
         }
+        System.out.println("Enter anything to exit Account List Page");
+        String exit = scan.next();
     }
-    
+
     //accessing one of the accounts to withdraw or deposit
     public void accessingAccountForWithdrawOrDeposit(customer c) {
-        
+
         System.out.println("Please enter account number below: ");
         Integer accountNumByUser = scan.nextInt();
         Integer customerId = c.getID();
@@ -116,6 +120,7 @@ public class accountsDao {
             closeAll(conn, stmt, pstmt, rs);
         }
     }
+
     //rs process to get and set the new funds based on withdraw or deposit
     public void rsAccessingAnAccountForDepositOrWithdraw(ResultSet rs, Integer accountNumByUser) throws SQLException {
         if (!rs.next()) {
@@ -133,8 +138,9 @@ public class accountsDao {
             } while (rs.next());
         }
     }
+
     //User input (withdraw or deposit) and methods that it calls
-    public void withdrawOrDeposit(String actionDecision, Double balance, Integer account_id){
+    public void withdrawOrDeposit(String actionDecision, Double balance, Integer account_id) {
         if (actionDecision.equals("1")) {
             withdrawMoney(balance, account_id);
         } else if (actionDecision.equals("2")) {
@@ -144,33 +150,37 @@ public class accountsDao {
 
     //method to withdraw money
     public void withdrawMoney(Double balance, Integer accountId) {
-        synchronized (lock) {
-            System.out.println("Write amount you want to withdraw: ");
-            Double amountForWithdraw = scan.nextDouble();
-            balance = balance - amountForWithdraw;
-            String sql = "UPDATE " + IDatabaseInformation.accountsTable + " SET " + IDatabaseInformation.balance + " = ? WHERE " + IDatabaseInformation.accountsId + " = ?";
-            Connection conn = null;
-            PreparedStatement pstmt = null;
-            Statement stmt = null;
-            ResultSet rs = null;
-            try {
-                conn = DriverManager.getConnection(IDatabaseInformation.databasePath);
-                ((org.sqlite.SQLiteConnection) conn).setBusyTimeout(5000); // Timeout in milliseconds
-                pstmt = conn.prepareStatement(sql);
-                pstmt.setDouble(1, balance);
-                pstmt.setInt(2, accountId);
-                pstmt.executeUpdate();
-                System.out.println("Changes Saved, Account Number: " + accountId + "\nBalance: " + balance);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } finally {
-                closeAll(conn, stmt, pstmt, rs);
-            }
+        String type = "Withdraw";
+        System.out.println("Write amount you want to withdraw: ");
+        Double amountForWithdraw = scan.nextDouble();
+        balance = balance - amountForWithdraw;
+        String sql = "UPDATE " + IDatabaseInformation.accountsTable + " SET " + IDatabaseInformation.balance + " = ? WHERE " + IDatabaseInformation.accountsId + " = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DriverManager.getConnection(IDatabaseInformation.databasePath);
+            ((org.sqlite.SQLiteConnection) conn).setBusyTimeout(5000); // Timeout in milliseconds
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setDouble(1, balance);
+            pstmt.setInt(2, accountId);
+            pstmt.executeUpdate();
+            System.out.println("Changes Saved, Account Number: " + accountId + "\nBalance: " + balance);
+            transactionsdao.generateNewTransaction(type, accountId, amountForWithdraw);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeAll(conn, stmt, pstmt, rs);
+            System.out.println("\nEnter anything to exit Withdraw Page");
+            String exit = scan.next();
+            System.out.println("\n");
         }
     }
 
     //method to deposit money
     public void depositMoney(Double balance, Integer accountId) {
+        String type = "Deposit";
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -179,27 +189,23 @@ public class accountsDao {
         System.out.println("Write amount you want to deposit: ");
         double amountForDeposit = scan.nextDouble();
         balance += amountForDeposit;
-        String customer_id_on_account = access_a_particularFieldInUsersAccount(IDatabaseInformation.accountTable_customerId, accountId);
-        String account_type = access_a_particularFieldInUsersAccount(IDatabaseInformation.accountType, accountId);
-        String deleteSQL = "DELETE FROM " + IDatabaseInformation.accountsTable + " WHERE " + IDatabaseInformation.accountsId + " = ?";
-        String insertSQL = "INSERT INTO " + IDatabaseInformation.accountsTable + "(account_id, costumer_id, account_type, balance) VALUES (?, ?, ?, ?)";
+//        String customer_id_on_account = access_a_particularFieldInUsersAccount(IDatabaseInformation.accountTable_customerId, accountId);
+//        String account_type = access_a_particularFieldInUsersAccount(IDatabaseInformation.accountType, accountId);
+        String updateSQL = "UPDATE " + IDatabaseInformation.accountsTable + " SET " + IDatabaseInformation.balance + " = " + balance + " WHERE " + IDatabaseInformation.accountsId + " = " + accountId;
         try {
             access_a_particularFieldInUsersAccount(IDatabaseInformation.accountType, accountId);
             conn = DriverManager.getConnection(IDatabaseInformation.databasePath);
-            pstmtDelete = conn.prepareStatement(deleteSQL);
-            pstmtInsert = conn.prepareStatement(insertSQL);
-            pstmtDelete.setInt(1, accountId);
-            pstmtDelete.executeUpdate();
-            pstmtInsert.setInt(1, accountId);
-            pstmtInsert.setInt(2, Integer.parseInt(customer_id_on_account)); //here need to add link to customer
-            pstmtInsert.setString(3, account_type);
-            pstmtInsert.setDouble(4, balance);
-            pstmtInsert.executeUpdate();
+            PreparedStatement pstmtUpdate = conn.prepareStatement(updateSQL);
+            pstmtUpdate.execute();
             System.out.println("Changes Saved, Account Number: " + accountId + "\nBalance: " + balance);
+            transactionsdao.generateNewTransaction(type, accountId, amountForDeposit);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             closeAll(conn, stmt, pstmtInsert, rs);
+            System.out.println("\nEnter anything to exit Deposit Page");
+            String exit = scan.next();
+            System.out.println("\n");
         }
 
     }
@@ -236,14 +242,14 @@ public class accountsDao {
             try {
                 rs.close();
             } catch (SQLException e) {
-                // Handle exception here
+                System.out.println("Exception on closing result set");
             }
         }
         if (pstmt != null) {
             try {
                 pstmt.close();
             } catch (SQLException e) {
-                // Handle exception here
+                System.out.println("Exception on closing prepared statement");
             }
         }
         if (stmt != null) {
@@ -261,6 +267,4 @@ public class accountsDao {
             }
         }
     }
-
-
 }

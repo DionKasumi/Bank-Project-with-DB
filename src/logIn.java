@@ -6,9 +6,11 @@ public class logIn {
     customerDao customerdao = new customerDao();
     accountsDao adao = new accountsDao();
     accounts acc = new accounts();
+
+    transactionsDao transactionsdao = new transactionsDao();
     boolean stayHere;
     public customer logInAttempt(){
-        System.out.println("Please enter username below: ");
+        System.out.println("\nPlease enter username below: ");
         String usernameAttempt = scan.nextLine();
         if (customerdao.checkUsername(usernameAttempt)){
             passwordTry(usernameAttempt);
@@ -18,7 +20,7 @@ public class logIn {
     }
 
     public void homepageOptions(String usernameAttempt, String passwordAttempt){
-        System.out.println("To create new Account, Enter '1'\nTo Show List of your Account, Enter '2'\nTo Access an Account, Enter '3'\nTo Go Back, Enter '4'\n");
+        System.out.println("To create new Account, Enter '1'\nTo Show List of your Account, Enter '2'\nTo Access an Account For Withdrawal or Deposit, Enter '3'\nTo Load Transactions Of An Account, Enter '4'\nTo Go Back, Enter '5'");
         String accountDecision = scan.nextLine();
         if (accountDecision.equalsIgnoreCase("1")) {
             acc.createNewAccount(adao, usernameAttempt, passwordAttempt);
@@ -27,6 +29,8 @@ public class logIn {
         } else if (accountDecision.equalsIgnoreCase("3")) {
             adao.accessingAccountForWithdrawOrDeposit(customerdao.getLoggedInUser(usernameAttempt, passwordAttempt));
         } else if (accountDecision.equals("4")) {
+            transactionsdao.getTransactionsForAccount();
+        }else if(accountDecision.equals("5")){
             this.stayHere = false;
         }
     }

@@ -8,5 +8,82 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="sqlite-jdbc-3.20.1" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/ant-1.6.5.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/apache-el-8.0.9.M3.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/apache-jsp-8.0.9.M3.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/apache-jsp-9.2.14.v20151106.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/asm-5.0.3.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/asm-commons-5.0.3.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/asm-tree-5.0.3.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/asm-util-5.0.3.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/atmosphere-runtime-2.4.30.vaadin1.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/colt-1.2.0.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/commons-codec-1.5.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/commons-collections-3.2.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/commons-io-2.4.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/commons-lang3-3.4.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/commons-logging-1.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/cssparser-0.9.18.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/flute-1.3.0.gg2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/gentyref-1.2.0.vaadin1.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/gson-2.6.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/gwt-dev-2.8.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/gwt-elemental-2.8.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/gwt-user-2.8.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/htmlunit-2.19.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/htmlunit-core-js-2.17.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/httpclient-4.5.1.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/httpcore-4.4.3.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/httpmime-4.5.1.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/icu4j-50.1.1.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/javax.annotation-api-1.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/javax.servlet-api-3.0.1.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jetty-annotations-9.2.14.v20151106.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jetty-continuation-9.2.9.v20150224.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jetty-http-9.2.9.v20150224.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jetty-io-9.2.9.v20150224.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jetty-jndi-9.2.14.v20151106.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jetty-plus-9.2.14.v20151106.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jetty-security-9.2.9.v20150224.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jetty-server-9.2.9.v20150224.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jetty-servlet-9.2.9.v20150224.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jetty-servlets-9.2.9.v20150224.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jetty-util-9.2.9.v20150224.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jetty-webapp-9.2.9.v20150224.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jetty-xml-9.2.9.v20150224.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jsinterop-annotations-1.0.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jsoup-1.11.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jsr305-1.3.9.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/nekohtml-1.9.22.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/portal-service-6.2.5.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/portlet-api-2.0.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/sac-1.3.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/serializer-2.7.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/tapestry-4.0.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/vaadin-sass-compiler-0.9.13.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/vaadin-slf4j-jdk14-1.6.1.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/validation-api-1.0.0.GA.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/websocket-api-9.2.13.v20150730.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/websocket-client-9.2.13.v20150730.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/websocket-common-9.2.13.v20150730.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/xalan-2.7.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/xercesImpl-2.11.0.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/xml-apis-1.4.01.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/gwt-dev-2.8.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/gwt-elemental-2.8.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/gwt-user-2.8.2.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jsinterop-annotations-1.0.2-sources.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/jsr305-1.3.9.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/vaadin-sass-compiler-0.9.13.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/vaadin extracted/lib/validation-api-1.0.0.GA-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>

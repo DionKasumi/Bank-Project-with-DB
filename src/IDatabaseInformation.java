@@ -21,6 +21,14 @@ public interface IDatabaseInformation {
     String accountType = "account_type";
     String balance = "balance";
 
+    //transactions table
+    String transactionsTable = "transactions_table";
+    String transactionsID = "transactionsID";
+    String transactionsTime = "transactionsTime";
+    String transactionsAccount = "transactionsAccount";
+    String transactionsAmount = "transactionsAmount";
+    String transactionsType = "transactionsType";
+
     //SQL CODE CUSTOMER
     String checkPasswordSql = "SELECT " + IDatabaseInformation.customerPassword + " FROM " + IDatabaseInformation.customersTable + " WHERE " + IDatabaseInformation.customersUsername + " = ?";
     String getLoggedInUserSql = "SELECT * FROM " + IDatabaseInformation.customersTable + " WHERE " + IDatabaseInformation.customersUsername + " = ? AND " + IDatabaseInformation.customerPassword + " = ?";
