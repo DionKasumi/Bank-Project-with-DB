@@ -20,17 +20,25 @@ public class logIn {
     }
 
     public void homepageOptions(String usernameAttempt, String passwordAttempt){
-        System.out.println("To create new Account, Enter '1'\nTo Show List of your Account, Enter '2'\nTo Access an Account For Withdrawal or Deposit, Enter '3'\nTo Load Transactions Of An Account, Enter '4'\nTo Go Back, Enter '5'");
+        System.out.println("Enter '1' - Create New Account\nEnter '2' - Show a List of Your Accounts\nEnter '3' - Access an Account For Withdrawal or Deposit\nEnter '4' - Load Transactions Of An Account\nEnter '5' -  Issue a Transfer\nEnter '6' - Back To Home Page");
         String accountDecision = scan.nextLine();
         if (accountDecision.equalsIgnoreCase("1")) {
+            System.out.println("\n*CREATING NEW ACCOUNT*");
             acc.createNewAccount(adao, usernameAttempt, passwordAttempt);
         } else if (accountDecision.equalsIgnoreCase("2")) {
+            System.out.println("\n*LIST OF ACCOUNTS*");
             adao.getAllAccountsOfUserAndShow(customerdao.getLoggedInUser(usernameAttempt, passwordAttempt));
         } else if (accountDecision.equalsIgnoreCase("3")) {
+            System.out.println("\n*DEPOSIT / WITHDRAW*");
             adao.accessingAccountForWithdrawOrDeposit(customerdao.getLoggedInUser(usernameAttempt, passwordAttempt));
         } else if (accountDecision.equals("4")) {
+            System.out.println("\n*TRANSACTIONS HISTORY*");
             transactionsdao.getTransactionsForAccount();
         }else if(accountDecision.equals("5")){
+            System.out.println("\n*TRANSFER MENU*");
+            adao.getInfoForTransfer();
+        }else if(accountDecision.equals("6")){
+            System.out.println("See you soon!");
             this.stayHere = false;
         }
     }

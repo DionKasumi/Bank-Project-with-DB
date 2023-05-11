@@ -62,7 +62,7 @@ public class transactionsDao {
                 int transactionAccount = rs.getInt(IDatabaseInformation.transactionsAccount);
                 double amount = rs.getDouble(IDatabaseInformation.transactionsAmount);
                 String transactionType = rs.getString(IDatabaseInformation.transactionsType);
-                String transaction = "ID: " + transactionId + "  Time: " + transactionTime + "  Amount: " + amount + "  Type: " + transactionType + "  Account Number: " + transactionAccount;
+                String transaction = "ID: " + transactionId + " | Time: " + transactionTime + " | Amount: " + amount + " | Type: " + transactionType + " | Account Number: " + transactionAccount;
                 System.out.println(transaction);
             } while (rs.next());
         }  System.out.println("\nEnter anything to exit transactions table!");

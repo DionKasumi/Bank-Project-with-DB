@@ -197,7 +197,7 @@ public class accountsDao {
             conn = DriverManager.getConnection(IDatabaseInformation.databasePath);
             PreparedStatement pstmtUpdate = conn.prepareStatement(updateSQL);
             pstmtUpdate.execute();
-            System.out.println("Changes Saved, Account Number: " + accountId + "\nBalance: " + balance);
+            System.out.println("Changes Saved, Account Number: " + accountId + "\nBalance: " + balance + "$");
             transactionsdao.generateNewTransaction(type, accountId, amountForDeposit);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -236,6 +236,61 @@ public class accountsDao {
         }
         return "Value not found!";
     }
+
+    public void getInfoForTransfer(){
+        System.out.println("Enter Account from which you want to send Transfer: ");
+        int accountNumber = scan.nextInt();
+        System.out.println("Enter Account to which you want to send the Transfer: ");
+        int outGoingAccountNumber = scan.nextInt();
+        System.out.println("Enter Amount you want to send: ");
+        double amount = scan.nextDouble();
+
+        System.out.println("\nAccount Transferring: " + accountNumber + "\nAccount Accepting: " + outGoingAccountNumber + "\nTransfer Amount: " + amount + "$\nAre you sure you want to proceed? y/n");
+        String finalDecision = scan.next();
+        if (finalDecision.equals("y")){
+            transferFundsToAnotherAccount(accountNumber, outGoingAccountNumber, amount);
+        }else {
+            System.out.println("Process terminated!");
+        }
+
+    }
+
+
+    public void transferFundsToAnotherAccount(Integer accountNumber, Integer outGoingAccountNumber, Double amount){
+        String sqlAddMoney = "UPDATE " + IDatabaseInformation.accountsTable + " SET " + IDatabaseInformation.balance + " = " + IDatabaseInformation.balance + " + " + amount + " WHERE " + IDatabaseInformation.accountsId + " = " + outGoingAccountNumber;
+        String sqlRemoveMoney = "UPDATE " + IDatabaseInformation.accountsTable + " SET " + IDatabaseInformation.balance + " = " + IDatabaseInformation.balance + " - " + amount + " WHERE " + IDatabaseInformation.accountsId + " = " + accountNumber;
+
+        Connection conn = null;
+        PreparedStatement pstmtRemoveMoney = null;
+        PreparedStatement pstmtAddMoney = null;
+
+
+        try {
+            conn = DriverManager.getConnection(IDatabaseInformation.databasePath);
+            pstmtRemoveMoney = conn.prepareStatement(sqlRemoveMoney);
+            pstmtRemoveMoney.execute();
+
+            pstmtAddMoney = conn.prepareStatement(sqlAddMoney);
+            pstmtAddMoney.execute();
+
+            transactionsdao.generateNewTransaction(Itransactions.transactionTransferredOut + outGoingAccountNumber, accountNumber, amount);
+            transactionsdao.generateNewTransaction(Itransactions.transactionTransferredInto + accountNumber, outGoingAccountNumber, amount);
+
+            System.out.println("Transfer successful!\n" + amount + "$ transferred to: " + outGoingAccountNumber);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            System.out.println("Enter Anything To Close Transfers Page");
+            String exit = scan.next();
+        }
+    }
+
+
+
+
+
+
 
     public void closeAll(Connection conn, Statement stmt, PreparedStatement pstmt, ResultSet rs) {
         if (rs != null) {

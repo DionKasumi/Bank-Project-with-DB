@@ -37,4 +37,10 @@ public interface IDatabaseInformation {
 
     //SQL CODE ACCOUNTS
     String getAccountsSql = "SELECT * FROM " + IDatabaseInformation.accountsTable + " WHERE " + IDatabaseInformation.accountTable_customerId + " = ";
+
+
+
+
+
+
 }
