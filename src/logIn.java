@@ -9,18 +9,16 @@ public class logIn {
 
     transactionsDao transactionsdao = new transactionsDao();
     boolean stayHere;
-    public customer logInAttempt(){
+    public void logInAttempt(){
         System.out.println("\nPlease enter username below: ");
         String usernameAttempt = scan.nextLine();
         if (customerdao.checkUsername(usernameAttempt)){
             passwordTry(usernameAttempt);
         }else System.out.println("Username Incorrect");
-
-        return null;
     }
 
     public void homepageOptions(String usernameAttempt, String passwordAttempt){
-        System.out.println("Enter '1' - Create New Account\nEnter '2' - Show a List of Your Accounts\nEnter '3' - Access an Account For Withdrawal or Deposit\nEnter '4' - Load Transactions Of An Account\nEnter '5' -  Issue a Transfer\nEnter '6' - Back To Home Page");
+        System.out.println("Enter '1' - Create New Account\nEnter '2' - Show a List of Your Accounts\nEnter '3' - Access an Account For Withdrawal or Deposit\nEnter '4' - Load Transactions Of An Account\nEnter '5' - Issue a Transfer\nEnter '6' - Back To Home Page");
         String accountDecision = scan.nextLine();
         if (accountDecision.equalsIgnoreCase("1")) {
             System.out.println("\n*CREATING NEW ACCOUNT*");
@@ -29,7 +27,7 @@ public class logIn {
             System.out.println("\n*LIST OF ACCOUNTS*");
             adao.getAllAccountsOfUserAndShow(customerdao.getLoggedInUser(usernameAttempt, passwordAttempt));
         } else if (accountDecision.equalsIgnoreCase("3")) {
-            System.out.println("\n*DEPOSIT / WITHDRAW*");
+            System.out.println("\n*WITHDRAW / DEPOSIT*");
             adao.accessingAccountForWithdrawOrDeposit(customerdao.getLoggedInUser(usernameAttempt, passwordAttempt));
         } else if (accountDecision.equals("4")) {
             System.out.println("\n*TRANSACTIONS HISTORY*");

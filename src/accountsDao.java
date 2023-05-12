@@ -154,20 +154,31 @@ public class accountsDao {
         System.out.println("Write amount you want to withdraw: ");
         Double amountForWithdraw = scan.nextDouble();
         balance = balance - amountForWithdraw;
-        String sql = "UPDATE " + IDatabaseInformation.accountsTable + " SET " + IDatabaseInformation.balance + " = ? WHERE " + IDatabaseInformation.accountsId + " = ?";
+        String sql = "UPDATE " + IDatabaseInformation.accountsTable + " SET " + IDatabaseInformation.balance + " = ? WHERE " + IDatabaseInformation.accountsId + " = ?" + " AND " + IDatabaseInformation.balance + " >= " + amountForWithdraw;
+        String sqlCheckBalance = "SELECT " + IDatabaseInformation.balance + " FROM " + IDatabaseInformation.accountsTable + " WHERE " + IDatabaseInformation.accountsId + " = " + accountId;
         Connection conn = null;
         PreparedStatement pstmt = null;
         Statement stmt = null;
         ResultSet rs = null;
+        PreparedStatement pstmtCheckBalance = null;
         try {
             conn = DriverManager.getConnection(IDatabaseInformation.databasePath);
-            ((org.sqlite.SQLiteConnection) conn).setBusyTimeout(5000); // Timeout in milliseconds
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setDouble(1, balance);
-            pstmt.setInt(2, accountId);
-            pstmt.executeUpdate();
-            System.out.println("Changes Saved, Account Number: " + accountId + "\nBalance: " + balance);
-            transactionsdao.generateNewTransaction(type, accountId, amountForWithdraw);
+            pstmtCheckBalance = conn.prepareStatement(sqlCheckBalance);
+            rs = pstmtCheckBalance.executeQuery();
+            if (rs.next()) {
+                double balanceCheck = rs.getDouble(IDatabaseInformation.balance);
+                if (amountForWithdraw <= balanceCheck){
+                    pstmt = conn.prepareStatement(sql);
+                    pstmt.setDouble(1, balance);
+                    pstmt.setInt(2, accountId);
+
+                    pstmt.executeUpdate();
+                    System.out.println("Changes Saved, Account Number: " + accountId + "\nBalance: " + balance);
+                    transactionsdao.generateNewTransaction(type, accountId, amountForWithdraw);
+                }else {
+                    System.out.println("Insufficient Balance!");
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -207,7 +218,6 @@ public class accountsDao {
             String exit = scan.next();
             System.out.println("\n");
         }
-
     }
 
     //method to access a specific value from the account based on account ID
@@ -258,26 +268,36 @@ public class accountsDao {
 
     public void transferFundsToAnotherAccount(Integer accountNumber, Integer outGoingAccountNumber, Double amount){
         String sqlAddMoney = "UPDATE " + IDatabaseInformation.accountsTable + " SET " + IDatabaseInformation.balance + " = " + IDatabaseInformation.balance + " + " + amount + " WHERE " + IDatabaseInformation.accountsId + " = " + outGoingAccountNumber;
-        String sqlRemoveMoney = "UPDATE " + IDatabaseInformation.accountsTable + " SET " + IDatabaseInformation.balance + " = " + IDatabaseInformation.balance + " - " + amount + " WHERE " + IDatabaseInformation.accountsId + " = " + accountNumber;
-
+        String sqlRemoveMoney = "UPDATE " + IDatabaseInformation.accountsTable + " SET " + IDatabaseInformation.balance + " = " + IDatabaseInformation.balance + " - " + amount + " WHERE " + IDatabaseInformation.accountsId + " = " + accountNumber + " AND " + IDatabaseInformation.balance + " >= " + amount;;
+        String sqlCheckBalance = "SELECT " + IDatabaseInformation.balance + " FROM " + IDatabaseInformation.accountsTable + " WHERE " + IDatabaseInformation.accountsId + " = " + accountNumber;
         Connection conn = null;
         PreparedStatement pstmtRemoveMoney = null;
         PreparedStatement pstmtAddMoney = null;
-
-
+        PreparedStatement pstmtCheckBalance = null;
+        ResultSet rs = null;
         try {
             conn = DriverManager.getConnection(IDatabaseInformation.databasePath);
-            pstmtRemoveMoney = conn.prepareStatement(sqlRemoveMoney);
-            pstmtRemoveMoney.execute();
+            pstmtCheckBalance = conn.prepareStatement(sqlCheckBalance);
+            rs = pstmtCheckBalance.executeQuery();
 
-            pstmtAddMoney = conn.prepareStatement(sqlAddMoney);
-            pstmtAddMoney.execute();
+            if (rs.next()) {
+                double balance = rs.getDouble(IDatabaseInformation.balance);
 
-            transactionsdao.generateNewTransaction(Itransactions.transactionTransferredOut + outGoingAccountNumber, accountNumber, amount);
-            transactionsdao.generateNewTransaction(Itransactions.transactionTransferredInto + accountNumber, outGoingAccountNumber, amount);
+                if (amount <= balance){
+                    System.out.println("inside amount balance");
+                    pstmtRemoveMoney = conn.prepareStatement(sqlRemoveMoney);
+                    pstmtRemoveMoney.executeUpdate();
+                    pstmtAddMoney = conn.prepareStatement(sqlAddMoney);
+                    pstmtAddMoney.execute();
 
-            System.out.println("Transfer successful!\n" + amount + "$ transferred to: " + outGoingAccountNumber);
+                    transactionsdao.generateNewTransaction(Itransactions.transactionTransferredOut + outGoingAccountNumber, accountNumber, amount);
+                    transactionsdao.generateNewTransaction(Itransactions.transactionTransferredInto + accountNumber, outGoingAccountNumber, amount);
 
+                    System.out.println("Transfer successful!\n" + amount + "$ transferred to: " + outGoingAccountNumber);
+                }else {
+                    System.out.println("Insufficient Balance!");
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
